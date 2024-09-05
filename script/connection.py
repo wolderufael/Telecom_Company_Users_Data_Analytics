@@ -25,7 +25,7 @@ class Connector:
                 database=db_name
             )
 
-             # Use pandas read_sql_query to load the table into a DataFrame
+            # Use pandas read_sql_query to load the table into a DataFrame
             query = f"SELECT * FROM {table_name};"
             df = pd.read_sql_query(query, connection)
 
