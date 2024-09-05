@@ -1,5 +1,6 @@
 import os
 from dotenv import load_dotenv
+import pandas as pd
 import psycopg2
 
 # Load environment variables from .env file
@@ -14,7 +15,7 @@ db_password = os.getenv('DB_PASSWORD')
 
 class Connector:
 # Connect to your PostgreSQL database
-    def connection():
+    def load_table_to_dataframe(self,table_name):
         try:
             connection = psycopg2.connect(
                 user=db_user,
@@ -24,13 +25,11 @@ class Connector:
                 database=db_name
             )
 
-            cursor = connection.cursor()
-            print("PostgreSQL connection is open")
+             # Use pandas read_sql_query to load the table into a DataFrame
+            query = f"SELECT * FROM {table_name};"
+            df = pd.read_sql_query(query, connection)
 
-            # Example query
-            cursor.execute("SELECT version();")
-            record = cursor.fetchone()
-            print("You are connected to - ", record, "\n")
+            return df
 
         except (Exception, psycopg2.Error) as error:
             print("Error while connecting to PostgreSQL", error)
@@ -38,6 +37,5 @@ class Connector:
         finally:
             # Close the connection
             if connection:
-                cursor.close()
                 connection.close()
                 print("PostgreSQL connection is closed")
