@@ -1,3 +1,4 @@
+# This is used for task 1 and 2
 import os
 from dotenv import load_dotenv
 import pandas as pd
