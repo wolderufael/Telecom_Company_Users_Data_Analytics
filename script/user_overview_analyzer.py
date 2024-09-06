@@ -5,6 +5,7 @@ from scipy.stats import zscore
 from sklearn.decomposition import PCA
 from sklearn.preprocessing import StandardScaler
 
+
 import matplotlib.pyplot as plt
 
 class OverviewAnalyser:   
@@ -35,9 +36,9 @@ class OverviewAnalyser:
     def replace_missing_with_mean_or_mode(self,data):
         #iterate over the columns
         for col in data.columns:
-            if col in ['Bearer Id','IMSI']:
+            if col in ['Bearer Id','IMSI','MSISDN/Number']:
                 data = data.dropna(subset=[col]) #drop the rows which don't have 'Bearer Id'or'IMSI'
-            elif col in ['MSISDN/Number','IMEI','Last Location Name']:
+            elif col in ['IMEI','Last Location Name']:
                 data[col] = data[col].fillna('Unknown') #replace with placeholder
             elif data[col].dtype == 'float64':  # If the column is numeric (float)
                 mean_value = data[col].mean()
@@ -95,7 +96,7 @@ class OverviewAnalyser:
 
     def aggregate_xdr_data(self,data):
         # Grouping by 'IMSI' (assuming it identifies the user)
-        user_aggregation = data.groupby('IMSI').agg(
+        user_aggregation = data.groupby('MSISDN/Number').agg(
             num_sessions=('Bearer Id', 'count'),  # Number of xDR sessions
             total_duration=('Dur. (ms)', 'sum'),  # Total session duration
             total_dl_data=('Total DL (Bytes)', 'sum'),  # Total download data
@@ -256,15 +257,15 @@ class OverviewAnalyser:
             'youtube_total', 'netflix_total', 'gaming_total', 'other_total'
         ]]
         
-        # Step 1: Standardize the data
+        # Standardize the data
         scaler = StandardScaler()
         standardized_data = scaler.fit_transform(data_subset)
         
-        # Step 2: Perform PCA
+        # Perform PCA
         pca = PCA(n_components=2)  # We'll reduce it to 2 components for simplicity
         principal_components = pca.fit_transform(standardized_data)
         
-        # Step 3: Create a DataFrame for the principal components
+        # Create a DataFrame for the principal components
         pca_df = pd.DataFrame(data=principal_components, columns=['PC1', 'PC2'])
         
         # Plot the explained variance ratio

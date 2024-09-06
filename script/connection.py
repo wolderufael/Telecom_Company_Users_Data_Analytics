@@ -2,7 +2,7 @@ import os
 from dotenv import load_dotenv
 import pandas as pd
 import psycopg2
-
+from sqlalchemy import create_engine
 # Load environment variables from .env file
 load_dotenv()
 
@@ -39,3 +39,22 @@ class Connector:
             if connection:
                 connection.close()
                 print("PostgreSQL connection is closed")
+                
+        # Add DataFrame to PostgreSQL table
+    def add_dataframe_to_table(self, df, table_name, if_exists='fail'):
+        try:
+            # Create SQLAlchemy engine for database connection
+            engine = create_engine(f'postgresql://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}')
+
+            # Use pandas to_sql to add DataFrame to the database
+            df.to_sql(table_name, engine, index=False, if_exists=if_exists)
+
+            print(f"DataFrame successfully added to table '{table_name}' in the database.")
+
+        except Exception as error:
+            print("Error while inserting DataFrame to PostgreSQL", error)
+
+        finally:
+            if engine:
+                engine.dispose()
+                print("SQLAlchemy engine is disposed.")
