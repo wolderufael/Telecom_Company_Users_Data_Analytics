@@ -108,6 +108,7 @@ class ExperienceAnalyzer:
         plt.show()
         
         # Describing each cluster
-        cluster_summary = agg_data.groupby('Cluster').mean().reset_index()
+        cluster_summary = agg_data.groupby('Cluster')
+        # .mean().reset_index()\
         
         return agg_data, cluster_summary

@@ -2,7 +2,6 @@
 import os
 from dotenv import load_dotenv
 import pandas as pd
-import psycopg2
 from sqlalchemy import create_engine
 # Load environment variables from .env file
 load_dotenv()
@@ -15,24 +14,24 @@ db_user = os.getenv('DB_USER')
 db_password = os.getenv('DB_PASSWORD')
 
 class Connector:
-    def load_table_to_dataframe(self, table_name):
-        try:
-            # Create an SQLAlchemy engine
-            engine = create_engine(f"postgresql://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}")
+    # def load_table_to_dataframe(self, table_name):
+    #     try:
+    #         # Create an SQLAlchemy engine
+    #         engine = create_engine(f"postgresql://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}")
 
-            # Use pandas read_sql to load the table into a DataFrame
-            query = f"SELECT * FROM {table_name};"
-            df = pd.read_sql(query, engine)
+    #         # Use pandas read_sql to load the table into a DataFrame
+    #         query = f"SELECT * FROM {table_name};"
+    #         df = pd.read_sql(query, engine)
 
-            return df
+    #         return df
 
-        except Exception as error:
-            print("Error while connecting to PostgreSQL", error)
+    #     except Exception as error:
+    #         print("Error while connecting to PostgreSQL", error)
 
-        finally:
-            # Close the connection
-            engine.dispose()
-            print("SQLAlchemy connection is disposed")
+    #     finally:
+    #         # Close the connection
+    #         engine.dispose()
+    #         print("SQLAlchemy connection is disposed")
                 
     # Add DataFrame to PostgreSQL table
     def add_dataframe_to_table(self, df, table_name, if_exists='fail'):
@@ -52,3 +51,22 @@ class Connector:
             if engine:
                 engine.dispose()
                 print("SQLAlchemy engine is disposed.")
+                
+    def load_table_to_dataframe(self, table_name):
+        try:
+            self.connection_string=f'postgresql://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}'
+            #Create SQLAlchemy engine for database connection
+            engine = create_engine(self.connection_string)
+            
+            # Load the data into a pandas DataFrame
+            dataframe = pd.read_sql_table(table_name, engine)
+            return dataframe
+        
+        except Exception as error:
+            print("Error while connecting to PostgreSQL", error)
+        
+        finally:
+            # Only dispose the engine if it was successfully created
+            if 'engine' in locals():
+                engine.dispose()
+                print("SQLAlchemy connection is disposed")
