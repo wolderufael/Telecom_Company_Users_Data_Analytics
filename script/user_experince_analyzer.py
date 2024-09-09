@@ -1,5 +1,8 @@
 import matplotlib.pyplot as plt
 import seaborn as sns
+from sklearn.cluster import KMeans
+from sklearn.preprocessing import MinMaxScaler
+import numpy as np
 
 class ExperienceAnalyzer:
     def user_aggregate(self,data):
@@ -74,3 +77,37 @@ class ExperienceAnalyzer:
         plt.ylabel('Handset Type')
         plt.tight_layout()
         plt.show()
+
+
+    def kmeans_clustering(self,agg_data, n_clusters=3):
+        # Selecting relevant columns for clustering
+        experience_metrics = agg_data[['Average TCP Retrans. Vol (Bytes)', 'Avg RTT (ms)', 'Avg Bearer TP (kbps)']]
+        
+        # Normalizing the data
+        scaler = MinMaxScaler()
+        normalized_metrics = scaler.fit_transform(experience_metrics)
+        
+        # Applying KMeans clustering
+        kmeans = KMeans(n_clusters=n_clusters, random_state=42)
+        agg_data['Cluster'] = kmeans.fit_predict(normalized_metrics)
+        
+        # Plotting the clusters
+        plt.figure(figsize=(12, 8))
+        
+        # Plot for TCP Retransmission vs. Avg RTT
+        plt.subplot(1, 2, 1)
+        sns.scatterplot(x='Average TCP Retrans. Vol (Bytes)', y='Avg RTT (ms)', hue='Cluster', data=agg_data, palette='viridis', s=100, alpha=0.7)
+        plt.title('TCP Retransmission vs. Avg RTT')
+        
+        # Plot for Avg Bearer TP vs. Avg RTT
+        plt.subplot(1, 2, 2)
+        sns.scatterplot(x='Avg Bearer TP (kbps)', y='Avg RTT (ms)', hue='Cluster', data=agg_data, palette='viridis', s=100, alpha=0.7)
+        plt.title('Avg Bearer TP vs. Avg RTT')
+        
+        plt.tight_layout()
+        plt.show()
+        
+        # Describing each cluster
+        cluster_summary = agg_data.groupby('Cluster').mean().reset_index()
+        
+        return agg_data, cluster_summary
