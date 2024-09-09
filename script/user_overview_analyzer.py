@@ -39,13 +39,13 @@ class OverviewAnalyser:
             if col in ['Bearer Id','IMSI','MSISDN/Number']:
                 data = data.dropna(subset=[col]) #drop the rows which don't have 'Bearer Id'or'IMSI'
             elif col in ['IMEI','Last Location Name']:
-                data[col] = data[col].fillna('Unknown') #replace with placeholder
+                data.loc[:,col] = data[col].fillna('Unknown') #replace with placeholder
             elif data[col].dtype == 'float64':  # If the column is numeric (float)
                 mean_value = data[col].mean()
-                data[col]=data[col].fillna(mean_value)  # Replace NaN with mean
+                data.loc[:,col]=data[col].fillna(mean_value)  # Replace NaN with mean
             elif data[col].dtype == 'object':  # If the column is object (string)
                 mode_value = data[col].mode()[0]
-                data[col]=data[col].fillna(mode_value) # Replace NaN with mode
+                data.loc[:,col]=data[col].fillna(mode_value) # Replace NaN with mode
         
         return data
     

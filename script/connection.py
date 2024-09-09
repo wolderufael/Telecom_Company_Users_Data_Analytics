@@ -1,7 +1,6 @@
 import os
 from dotenv import load_dotenv
 import pandas as pd
-import psycopg2
 from sqlalchemy import create_engine
 # Load environment variables from .env file
 load_dotenv()
@@ -15,30 +14,24 @@ db_password = os.getenv('DB_PASSWORD')
 
 class Connector:
 # Connect to your PostgreSQL database
-    def load_table_to_dataframe(self,table_name):
+    def load_table_to_dataframe(self, table_name):
         try:
-            connection = psycopg2.connect(
-                user=db_user,
-                password=db_password,
-                host=db_host,
-                port=db_port,
-                database=db_name
-            )
+            # Create an SQLAlchemy engine
+            engine = create_engine(f"postgresql://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}")
 
-            # Use pandas read_sql_query to load the table into a DataFrame
+            # Use pandas read_sql to load the table into a DataFrame
             query = f"SELECT * FROM {table_name};"
-            df = pd.read_sql_query(query, connection)
+            df = pd.read_sql(query, engine)
 
             return df
 
-        except (Exception, psycopg2.Error) as error:
+        except Exception as error:
             print("Error while connecting to PostgreSQL", error)
 
         finally:
             # Close the connection
-            if connection:
-                connection.close()
-                print("PostgreSQL connection is closed")
+            engine.dispose()
+            print("SQLAlchemy connection is disposed")
                 
         # Add DataFrame to PostgreSQL table
     def add_dataframe_to_table(self, df, table_name, if_exists='fail'):
