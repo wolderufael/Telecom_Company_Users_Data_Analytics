@@ -15,6 +15,23 @@ db_user = os.getenv('DB_USER')
 db_password = os.getenv('DB_PASSWORD')
 
 class Connector:
+    def add_dataframe_to_table(self, df, table_name, if_exists='fail'):
+        try:
+            # Create SQLAlchemy engine for database connection
+            engine = create_engine(f'postgresql://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}')
+
+            # Use pandas to_sql to add DataFrame to the database
+            df.to_sql(table_name, engine, index=False, if_exists=if_exists)
+
+            print(f"DataFrame successfully added to table '{table_name}' in the database.")
+
+        except Exception as error:
+            print("Error while inserting DataFrame to PostgreSQL", error)
+
+        finally:
+            if engine:
+                engine.dispose()
+                print("SQLAlchemy engine is disposed.")
 # Connect to your PostgreSQL database
     def load_table_to_dataframe(self, table_name):
         try:
