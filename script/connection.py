@@ -22,15 +22,7 @@ db_user = os.getenv('DB_USER')
 db_password = os.getenv('DB_PASSWORD')
 
 class Connector:
-<<<<<<< HEAD
-<<<<<<< HEAD
-# Connect to your PostgreSQL database
-    def load_table_to_dataframe(self, table_name):
-        try:
-            # Create an SQLAlchemy engine
-            engine = create_engine(f"postgresql://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}")
 
-=======
     def add_dataframe_to_table(self, df, table_name, if_exists='fail'):
         try:
             # Create SQLAlchemy engine for database connection
