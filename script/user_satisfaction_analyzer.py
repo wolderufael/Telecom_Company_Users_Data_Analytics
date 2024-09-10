@@ -9,6 +9,8 @@ from sklearn.linear_model import LinearRegression
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 import pandas as pd
+import time
+import docker
 
 class SatisfactionAnalyzer:
     def user_aggregate(self,data):
@@ -181,3 +183,29 @@ class SatisfactionAnalyzer:
         # Close connection and session
         session.close()
         connection.close()
+
+
+    def track_model_deployment(model):
+        # Start time
+        start_time = time.time()
+
+        # Dummy code version and metrics
+        code_version = "v1.0"
+        source = "local"
+        params = model.get_params()
+        metrics = {"accuracy": 0.95}
+
+        # End time
+        end_time = time.time()
+        
+        # Log model tracking details
+        tracking_report = {
+            "Code Version": code_version,
+            "Start Time": start_time,
+            "End Time": end_time,
+            "Source": source,
+            "Parameters": params,
+            "Metrics": metrics
+        }
+        
+        return tracking_report
