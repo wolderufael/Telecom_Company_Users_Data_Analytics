@@ -139,7 +139,7 @@ class SatisfactionAnalyzer:
         
         # Plotting the clusters
         plt.figure(figsize=(10, 6))
-        sns.scatterplot(x='Engagement Score', y='Experience Score', hue='Cluster', data=agg_data, palette='viridis', s=100)
+        sns.scatterplot(x='Engagement Score', y='Experience Score', hue='Satisfaction Cluster', data=agg_data, palette='viridis', s=100)
         plt.title(f'KMeans Clustering with {n_clusters} Clusters')
         plt.xlabel('Engagement Score')
         plt.ylabel('Experience Score')
