@@ -105,11 +105,11 @@ class SatisfactionAnalyzer:
         
         # Plotting the top 10 satisfied customers
         plt.figure(figsize=(10, 6))
-        sns.barplot(x='Satisfaction Score', y=top_satisfied_customers.index, 
+        sns.barplot(y='Satisfaction Score', x=top_satisfied_customers.index, 
                     data=top_satisfied_customers, hue='Satisfaction Score', palette='Blues_d', legend=False)
-        plt.title('Top 10 Satisfied Customers')
-        plt.xlabel('Satisfaction Score')
-        plt.ylabel('Customer Index')
+        plt.title('Top 10 Satisfied Users')
+        plt.ylabel('Satisfaction Score')
+        plt.xlabel('User Index')
         plt.xticks(rotation=90)
         plt.tight_layout()
         plt.show()
